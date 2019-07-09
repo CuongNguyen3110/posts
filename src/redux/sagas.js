@@ -1,10 +1,11 @@
 import { takeEvery, call, put, all } from 'redux-saga/effects';
-import { 
-    REQUEST_POSTS, 
-    SUBMIT_POST, 
-    recievePostsFromApi, 
-    createPostSuccess, 
-    finishLoading 
+import {
+    REQUEST_POSTS,
+    CREATE_POST,
+    requestPostsSuccess,
+    requestPostsError,
+    createPostSuccess,
+    createPostError,
 } from './index';
 import { apiFetchPost, apiAddNewPost } from '../helpers/api'
 
@@ -13,25 +14,36 @@ function* watchFetchPosts() {
 }
 
 function* fetchPosts() {
-    const data = yield call(apiFetchPost);
-    yield put(recievePostsFromApi(data));
+    let data;
+    try {
+        data = yield call(apiFetchPost);
+    } catch (error) {
+        return yield put(requestPostsError(error));
+    }
+
+    yield put(requestPostsSuccess(data));
 }
 
 function* watchAddNewPost() {
-    yield takeEvery(SUBMIT_POST, addNewPost);
+    yield takeEvery(CREATE_POST, addNewPost);
 }
 
 function* addNewPost(action) {
-    console.log(action)
     const { payload } = action;
-    const response = yield call(apiAddNewPost, payload);
+
+    let response;
+    try {
+        response = yield call(apiAddNewPost, payload);
+    } catch (error) {
+        return yield put(createPostError(error));
+    }
+
     yield put(createPostSuccess(response));
-    yield put(finishLoading());
 }
 
 export default function* rootSaga() {
     yield all([
-        watchFetchPosts(), 
+        watchFetchPosts(),
         watchAddNewPost()
     ]);
 }

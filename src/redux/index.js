@@ -1,17 +1,18 @@
 import { combineReducers } from 'redux';
 
 export const REQUEST_POSTS = 'REQUEST_POSTS';
-const FETCH_POSTS = 'FETCH_POSTS';
-export const SUBMIT_POST = 'SUBMIT_POST';
+const REQUEST_POSTS_SUCCESS = 'REQUEST_POSTS_SUCCESS';
+const REQUEST_POSTS_ERROR = 'REQUEST_POSTS_ERROR';
+const HIDE_ALL_POSTS = 'HIDE_ALL_POSTS';
+export const CREATE_POST = 'CREATE_POST';
 const CREATE_POST_SUCCESS = 'CREATE_POST_SUCCESS';
+const CREATE_POST_ERROR = 'CREATE_POST_ERROR';
 const CHANGE_PAGE = 'CHANGE_PAGE';
 const SEARCH = 'SEARCH';
-const FINISH_LOADING = 'FINISH_LOADING';
-const ALERT = 'ALERT';  
 
 // actions
-export const recievePostsFromApi = (data) => ({
-    type: FETCH_POSTS,
+export const requestPostsSuccess = (data) => ({
+    type: REQUEST_POSTS_SUCCESS,
     posts: data
 })
 
@@ -19,8 +20,17 @@ export const requestPostsFromApi = () => ({
     type: REQUEST_POSTS
 })
 
-export const submitPost = (data) => ({
-    type: SUBMIT_POST,
+export const requestPostsError = (error) => ({
+    type: REQUEST_POSTS_ERROR,
+    payload: error
+})
+
+export const hideAllPosts = () => ({
+    type: HIDE_ALL_POSTS
+})
+
+export const createPost = (data) => ({
+    type: CREATE_POST,
     payload: data
 })
 
@@ -29,13 +39,9 @@ export const createPostSuccess = (data) => ({
     payload: data
 })
 
-export const alert = (data) => ({
-    type: ALERT,
-    payload: data
-})
-
-export const finishLoading = () => ({
-    type: FINISH_LOADING
+export const createPostError = (error) => ({
+    type: CREATE_POST_ERROR,
+    payload: error
 })
 
 export const changePage = (data) => ({
@@ -55,27 +61,26 @@ export const changeUrl = (url) => ({
 // reducer
 const posts = (state=[], action) => {
     switch (action.type) {
-        case FETCH_POSTS:
+        case REQUEST_POSTS_SUCCESS:
             return [...state, ...action.posts]
         case CREATE_POST_SUCCESS:
-            return [ action.payload ];
+            return [ action.payload ]
+        case HIDE_ALL_POSTS:
+            return []
         default:
             return state;
     }
 }
 
-const isAlert = (state=false, action) => {
-    switch (action.type) {
-        case ALERT:
-            return action.payload
-        default:
-            return state
-    }
-}
-
 const isLoading = (state=true, action) => {
     switch (action.type) {
-        case FINISH_LOADING:
+        case REQUEST_POSTS:
+            return true
+        case REQUEST_POSTS_SUCCESS:
+            return false
+        case CREATE_POST:
+            return true
+        case CREATE_POST_SUCCESS:
             return false
         default:
             return state
@@ -110,7 +115,6 @@ const searchString = (state='', action) => {
 
 export default (extraReducer) => combineReducers({
     posts,
-    isAlert,
     isLoading,
     page,
     searchString,

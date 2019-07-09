@@ -8,7 +8,7 @@ class Paging extends React.Component {
     }
 
     render() {
-            
+
         const { totalPosts, pageSize, pageNumber } = this.props;
         const totalPages = Math.ceil(totalPosts.length / pageSize);
 
@@ -16,35 +16,72 @@ class Paging extends React.Component {
             <div>
                 <Pagination>
                     <PaginationItem>
-                        <PaginationLink 
-                            first 
+                        <PaginationLink
+                            first
                             onClick={this.onPageChange(1)}
                         />
                     </PaginationItem>
+
                     <PaginationItem>
-                        <PaginationLink 
-                            previous 
+                        <PaginationLink
+                            previous
                             disabled={pageNumber === 1 ? true : false}
                             onClick={this.onPageChange(pageNumber - 1)}
                         />
                     </PaginationItem>
+                    {pageNumber > 2
+                        ? <React.Fragment>
+                            <PaginationItem>
+                                <PaginationLink onClick={this.onPageChange(1)}>
+                                    1
+                                </PaginationLink>
+                            </PaginationItem>
+                            <PaginationItem>
+                                <PaginationLink>
+                                    ...
+                                </PaginationLink>
+                            </PaginationItem>
+                        </React.Fragment>
+                        : null
+                    }
 
                     <PaginationItem active>
-                        <PaginationLink> 
+                        <PaginationLink>
                             {pageNumber}
                         </PaginationLink>
                     </PaginationItem>
 
+                    {totalPages - pageNumber > 1
+                        ? <React.Fragment>
+                            <PaginationItem>
+                                <PaginationLink>
+                                    ...
+                            </PaginationLink>
+                            </PaginationItem>
+                        </React.Fragment>
+                        : null
+                    }
+
+                    {(totalPages > 1 && totalPages !== pageNumber)
+                        ? <PaginationItem>
+                            <PaginationLink onClick={this.onPageChange(totalPages)}>
+                                {totalPages}
+                            </PaginationLink>
+                        </PaginationItem>
+                        : null
+                    }
+
                     <PaginationItem>
-                        <PaginationLink 
-                            next 
+                        <PaginationLink
+                            next
                             disabled={pageNumber === totalPages ? true : false}
                             onClick={this.onPageChange(pageNumber + 1)}
                         />
                     </PaginationItem>
+
                     <PaginationItem>
-                        <PaginationLink 
-                            last 
+                        <PaginationLink
+                            last
                             onClick={this.onPageChange(totalPages)}
                         />
                     </PaginationItem>
@@ -52,7 +89,6 @@ class Paging extends React.Component {
             </div>
         )
     }
-
 }
 
 export default Paging;

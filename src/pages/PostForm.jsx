@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { submitPost, alert, changeUrl } from '../redux';
+import { createPost, changeUrl } from '../redux';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 
@@ -10,7 +10,8 @@ class PostForm extends React.Component {
     state = {
         userId: '',
         body: '',
-        title: ''
+        title: '',
+        isAlert: false
     }
 
     onInputChange = name => event => {
@@ -22,30 +23,34 @@ class PostForm extends React.Component {
     onSubmit = (e) => {
         e.preventDefault();
         const { userId, title, body } = this.state;
-        const { alert, submitPost, changeUrl } = this.props;
+        const { createPost, changeUrl } = this.props;
 
         if (!userId || !title) {
-            alert(true);
+            this.setState({
+                isAlert: true
+            })
         } else {
-            submitPost({
+            createPost({
                 userId,
                 title,
                 body
             })
-            alert(false);
+            this.setState({
+                isAlert: false
+            })
             changeUrl('POSTS');
         }
     }
 
     render() {
-        const { userId, title, body } = this.state;
+        const { userId, title, body, isAlert } = this.state;
 
         return (
             <div className='container' style={{ marginTop: '80px' }}>
                 <h1 className='text-center' style={{ marginTop: "20px" }}>Form</h1>
                 <div className='row justify-content-center'>
                     <form className='col-6' >
-                        {this.props.isAlert ? <div className='alert alert-danger'>Please input userID and Post title</div> : null}
+                        {isAlert ? <div className='alert alert-danger'>Please input userID and Post title</div> : null}
                         <div className="form-group">
                             {/* <label >UserID<span className='text-danger'>*</span></label> */}
                             <TextField
@@ -94,17 +99,9 @@ class PostForm extends React.Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    const { isAlert } = state;
-    return {
-        isAlert
-    }
-}
-
 const mapDispatchToProps = (dispatch) => ({
-    submitPost: (data) => dispatch(submitPost(data)),
-    alert: (data) => dispatch(alert(data)),
+    createPost: (data) => dispatch(createPost(data)),
     changeUrl: (url) => dispatch(changeUrl(url))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(PostForm);
+export default connect(null, mapDispatchToProps)(PostForm);
