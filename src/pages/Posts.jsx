@@ -5,17 +5,12 @@ import { requestPostsFromApi, changePage, hideAllPosts } from '../redux/index';
 import Paging from '../components/Paging';
 import SearchBar from '../components/SearchBar';
 
-import { postsSelector } from '../redux/selector';
-import { fbind } from 'q';
+import { postsSelector } from '../redux/index';
 
 class Posts extends React.Component {
 
     state = {
         allPostsShowed: false
-    }
-
-    onShare = () => {
-        
     }
 
     onShowAndHideAllPosts = () => {

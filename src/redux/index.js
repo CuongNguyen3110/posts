@@ -1,5 +1,7 @@
 import { combineReducers } from 'redux';
 
+export { postsSelector } from './selector';
+
 export const REQUEST_POSTS = 'REQUEST_POSTS';
 const REQUEST_POSTS_SUCCESS = 'REQUEST_POSTS_SUCCESS';
 const REQUEST_POSTS_ERROR = 'REQUEST_POSTS_ERROR';
@@ -13,7 +15,7 @@ const SEARCH = 'SEARCH';
 // actions
 export const requestPostsSuccess = (data) => ({
     type: REQUEST_POSTS_SUCCESS,
-    posts: data
+    payload: data
 })
 
 export const requestPostsFromApi = () => ({
@@ -62,9 +64,9 @@ export const changeUrl = (url) => ({
 const posts = (state=[], action) => {
     switch (action.type) {
         case REQUEST_POSTS_SUCCESS:
-            return [...state, ...action.posts]
+            return [...state, ...action.payload]
         case CREATE_POST_SUCCESS:
-            return [ action.payload ]
+            return [...state, action.payload ]
         case HIDE_ALL_POSTS:
             return []
         default:
